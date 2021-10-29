@@ -8,7 +8,7 @@ if __name__ == '__main__':
 
     a = Handler()
 
-    final_data = a.Execute("QUJTQSBCQU5LIChTRVlDSEVMTEVTKSBQRU5TSU9OIEZVTkQgTFREP3JlZ19ubz1DODQ0ODE5", "overview", "", "")
+    final_data = a.Execute("bank", "", "", "")
     print(json.dumps(final_data, indent=4))
     # print(final_data)
 

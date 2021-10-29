@@ -127,27 +127,26 @@ class Handler():
                 else:
                     row += 1
         edd = {}
-        try:
-            orga_name = tree.xpath(f'//table[@id="tableResults"]/tbody/tr[{company_number + 1}]/td[2]/text()')[0].strip()
-        except:
-            orga_name = ''
-        company = {'vcard:organization-name': orga_name, 'isDomiciledIn': 'SC'}
-        business_classifier = self.get_business_classifier(tree, company_number + 1)
-        if business_classifier:
-            company['bst:businessClassifier'] = business_classifier
-        lei_legal_form = self.get_lei_legal_form(tree, company_number + 1)
-        if lei_legal_form:
-            company['lei:legalForm'] = lei_legal_form
-        identifiers = self.get_identifiers(tree, company_number + 1)
-        if identifiers:
-            company['identifiers'] = identifiers
-        source_date = self.get_source_date(tree)
-        if source_date:
-            company['sourceDate'] = source_date
-        edd['overview'] = company
+        if self.FETCH_TYPE == 'overview' or self.FETCH_TYPE == '':
+            try:
+                orga_name = tree.xpath(f'//table[@id="tableResults"]/tbody/tr[{company_number + 1}]/td[2]/text()')[0].strip()
+            except:
+                return None
+            company = {'vcard:organization-name': orga_name, 'isDomiciledIn': 'SC'}
+            business_classifier = self.get_business_classifier(tree, company_number + 1)
+            if business_classifier:
+                company['bst:businessClassifier'] = business_classifier
+            lei_legal_form = self.get_lei_legal_form(tree, company_number + 1)
+            if lei_legal_form:
+                company['lei:legalForm'] = lei_legal_form
+            identifiers = self.get_identifiers(tree, company_number + 1)
+            if identifiers:
+                company['identifiers'] = identifiers
+            source_date = self.get_source_date(tree)
+            if source_date:
+                company['sourceDate'] = source_date
+            edd['overview'] = company
 
-
-        # link = str(company_number + 1)
         try:
             name = company['vcard:organization-name']
             id = company['identifiers']['trade_register_number']
