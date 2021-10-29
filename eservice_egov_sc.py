@@ -57,8 +57,8 @@ class Handler():
     def fetch_by_field(self, link, tree):
         link_list = base64.b64decode(link).decode('utf-8')
         link = link_list.split('?reg_no=')[0]
-        print(link)
-        res = self.parse(int(link) - 1, tree)
+        id = link_list.split('?reg_no=')[1]
+        res = self.parse(link, id, True)
         return res
 
     def parse_pages(self, tree):
@@ -111,7 +111,21 @@ class Handler():
         source_date = datetime.strptime(f'{date} {source_date[1]} {source_date[2]}', '%d %B %Y').strftime('%Y-%m-%d')
         return source_date
 
-    def parse(self, company_number, tree):
+    def parse(self, company_number, tree, fetch_by_field=False):
+        if fetch_by_field:
+            id = tree
+            tree = self.get_pages(company_number)
+            row = 1
+            while True:
+                try:
+                    company_code = tree.xpath(f'//*[@id="tableResults"]/tbody/tr[{row}]/td[1]/text()')[0].strip()
+                except:
+                    break
+                if company_code == id:
+                    company_number = row - 1
+                    break
+                else:
+                    row += 1
         edd = {}
         try:
             orga_name = tree.xpath(f'//table[@id="tableResults"]/tbody/tr[{company_number + 1}]/td[2]/text()')[0].strip()
@@ -133,10 +147,11 @@ class Handler():
         edd['overview'] = company
 
 
-        link = str(company_number + 1)
+        # link = str(company_number + 1)
         try:
+            name = company['vcard:organization-name']
             id = company['identifiers']['trade_register_number']
-            link = link + '?reg_no=' + id
+            link = name + '?reg_no=' + id
             edd['_links'] = self.links(link)
         except:
             pass
