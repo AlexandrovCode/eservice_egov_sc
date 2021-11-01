@@ -148,8 +148,8 @@ class Handler():
             edd['overview'] = company
 
         try:
-            name = company['vcard:organization-name']
-            id = company['identifiers']['trade_register_number']
+            name = tree.xpath(f'//table[@id="tableResults"]/tbody/tr[{company_number + 1}]/td[2]/text()')[0].strip()
+            id = tree.xpath(f'//*[@id="tableResults"]/tbody/tr[{company_number + 1}]/td[1]/text()')[0].strip()
             link = name + '?reg_no=' + id
             edd['_links'] = self.links(link)
         except:
